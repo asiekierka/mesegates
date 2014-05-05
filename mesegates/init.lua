@@ -111,7 +111,7 @@ function mesegates:register_gate(gate)
 				drawtype = "nodebox",
 				paramtype = "light", paramtype2 = "facedir",
 				node_box = gate_box, selection_box = gate_box,
-				is_ground_content = true, groups = {dig_immediate = 2},
+				is_ground_content = true, groups = {dig_immediate = 2, mesegate = 1},
 				sounds = default.node_sound_stone_defaults(),
 				mesecons = {
 					receptor = { state = state_name, rules = get_output_rules },
@@ -120,6 +120,7 @@ function mesegates:register_gate(gate)
 						action_change = gate.on_change
 					}
 				},
+				mesegate = gate,
 				on_punch = function(pos, node)
 					local name_s = string.sub(node.name, 0, -3)
 					local name_e = string.sub(node.name, -1)
