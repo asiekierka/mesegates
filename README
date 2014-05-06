@@ -1,1 +1,6 @@
 Mesegates adds logic gates to Minetest. The sides can be configured by left-clicking. That's about it.
+
+Licensing:
+
+* The code is licensed under the zlib license.
+* The textures are licensed under CC0.
