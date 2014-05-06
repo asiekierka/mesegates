@@ -1,6 +1,12 @@
 mesegates = {}
 
+local creative_names = {}
+
 -- Useful API functions
+
+function mesegates:get_creative_name(gate)
+	return creative_names[gate]
+end
 
 function mesegates:get_state(pos)
 	return (string.byte(minetest.get_node(pos).name, -1) > 48)
@@ -149,6 +155,8 @@ function mesegates:register_gate(gate)
 			if gate["on_rightclick"] ~= nil then node.on_rightclick = gate.on_rightclick end
 			if not (on == 0 and sides == creative_side) then
 				node.groups.not_in_creative_inventory = 1
+			else
+				creative_names[node_name] = node_name.."_0"..sides..on	
 			end
 			minetest.register_node(node_name.."_0"..sides..on, node)
 		end end
