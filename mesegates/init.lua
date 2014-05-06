@@ -3,7 +3,7 @@ mesegates = {}
 -- Useful API functions
 
 function mesegates:get_state(pos)
-	return string.byte(minetest.get_node(pos).name, -1) - 48
+	return (string.byte(minetest.get_node(pos).name, -1) > 48)
 end
 
 local get_side_id_from_name = function(name)
@@ -61,7 +61,7 @@ function mesegates:get_powered_input_count(pos, node)
 end
 
 function mesegates:set_state(pos, new_on)
-	local current_on = (mesegates:get_state(pos) == 1)
+	local current_on = mesegates:get_state(pos)
 	local node = minetest.get_node(pos)
 	if new_on ~= current_on then
 		state_name = "0"
@@ -87,9 +87,13 @@ end
 function mesegates:register_gate(gate)
 	local node_name = gate.mod .. ":" .. gate.name
 	local creative_side = 7
-	if gate.max_inputs == 2 then creative_side = 5 end
-	if gate.max_inputs == 1 then creative_side = 2 end
-	for sides = 1,7 do
+	if gate.default_side ~= nil then creative_side = gate.default_side else
+		if gate.max_inputs == 2 then creative_side = 5 end
+		if gate.max_inputs == 1 then creative_side = 2 end
+	end
+	local possible_sides = {1,2,3,4,5,6,7}
+	if gate.possible_sides ~= nil then possible_sides = gate.possible_sides end
+	for _,sides in ipairs(possible_sides) do
 		local side_count = #get_input_rules_from_id(sides)
 		if side_count >= gate.min_inputs and side_count <= gate.max_inputs then for on = 0,1 do
 			state_name = "off"
@@ -101,9 +105,10 @@ function mesegates:register_gate(gate)
 			local top_tex = fif((sides % 2) >= 1, "^mesegates_side_open_right.png", "")
 				.. fif(sides >= 4, "^mesegates_side_open_left.png", "")
 				.. fif((sides % 4) >= 2, "^mesegates_side_open_bottom.png", "")
+				.. "^mesegates_"..gate.name.."_"..on..".png"
 			local node = {
 				description = gate.description,
-				tiles = {"mesegates_top.png^mesegates_"..gate.name.."_"..on..".png"..top_tex, "mesegates_bottom.png",
+				tiles = {"mesegates_top.png"..top_tex, "mesegates_bottom.png",
 					fif((sides % 2) >= 1, t_o, t_c),
 					fif(sides >= 4, t_o, t_c),
 					"mesegates_side_open_top.png",
@@ -116,10 +121,10 @@ function mesegates:register_gate(gate)
 				mesecons = {
 					receptor = { state = state_name, rules = get_output_rules },
 					effector = {
-						rules = get_input_rules,
-						action_change = gate.on_change
+						rules = get_input_rules
 					}
 				},
+				drop = node_name.."_0"..creative_side.."0",
 				mesegate = gate,
 				on_punch = function(pos, node)
 					local name_s = string.sub(node.name, 0, -3)
@@ -132,11 +137,15 @@ function mesegates:register_gate(gate)
 							minetest.swap_node(pos, {name=name, param2=node.param2})
 							node.name = name
 							mesecon:update_autoconnect(pos)
-							minetest.registered_nodes[name].mesecons.effector.action_change(pos, node)
+							local effector = minetest.registered_nodes[name].mesecons.effector
+							if effector["on_change"] ~= nil then effector.on_change(pos, node) end
 						end
 					end
 				end
 			}
+			if gate["on_change"] ~= nil then node.mesecons.effector.action_change = gate.on_change end
+			if gate["on_on"] ~= nil then node.mesecons.effector.action_on = gate.on_on end
+			if gate["on_off"] ~= nil then node.mesecons.effector.action_off = gate.on_off end
 			if gate["on_rightclick"] ~= nil then node.on_rightclick = gate.on_rightclick end
 			if not (on == 0 and sides == creative_side) then
 				node.groups.not_in_creative_inventory = 1

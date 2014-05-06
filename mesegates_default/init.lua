@@ -70,3 +70,13 @@ mesegates:register_gate({
 		mesegates:set_state(pos, (count_on == 1))
 	end
 })
+mesegates:register_gate({
+	mod = "mesegates_default",
+	name = "t_latch", description = "Toggle Latch",
+	min_inputs = 1, max_inputs = 1,
+	on_on = function(pos, node)
+		local toggle = (mesegates:get_powered_input_count(pos, node) > 0)
+		local current = mesegates:get_state(pos)
+		mesegates:set_state(pos, toggle == not current)
+	end
+})
