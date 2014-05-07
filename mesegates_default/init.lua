@@ -241,6 +241,39 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	output = mesegates:get_creative_name("mesegates_default:rs_flipflop"),
+	recipe = {
+		{mesegates:get_creative_name("mesegates_default:not"), mesegates:get_creative_name("mesegates_default:t_latch"), mesegates:get_creative_name("mesegates_default:diode")}
+	}
+})
+
+minetest.register_craft({
+	type = "shapeless",
+	output = mesegates:get_creative_name("mesegates_default:jk_flipflop"),
+	recipe = {
+		mesegates:get_creative_name("mesegates_default:rs_flipflop"),
+		mesegates:get_creative_name("mesegates_default:t_latch")
+	}
+})
+
+minetest.register_craft({
+	output = mesegates:get_creative_name("mesegates_default:d_flipflop"),
+	recipe = {
+		{mesegates:get_creative_name("mesegates_default:nand"), mesegates:get_creative_name("mesegates_default:not")},
+		{mesegates:get_creative_name("mesegates_default:not"), mesegates:get_creative_name("mesegates_default:nand")}
+	}
+})
+
+minetest.register_craft({
+	type = "shapeless",
+	output = mesegates:get_creative_name("mesegates_default:t_flipflop"),
+	recipe = {
+		mesegates:get_creative_name("mesegates_default:t_latch"),
+		mesegates:get_creative_name("mesegates_default:nand")
+	}
+})
+
+minetest.register_craft({
 	type = "shapeless",
 	output = "mesegates_default:base 9",
 	recipe = {"default:stone", "default:mese_crystal"}
