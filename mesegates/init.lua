@@ -4,6 +4,10 @@ local creative_names = {}
 
 -- Useful API functions
 
+function mesegates:get_refresh_time()
+	return 0.05
+end
+
 function mesegates:get_creative_name(gate)
 	return creative_names[gate]
 end
@@ -93,7 +97,7 @@ function mesegates:set_state(pos, new_on)
 			state_name2 = "on"
 		end
 		minetest.swap_node(pos, {name = string.sub(node.name, 0, -2)..state_name, param2=node.param2})
-		mesecon.queue:add_action(pos, "receptor_"..state_name2, {mesegates:get_output_rules(node)}, 0.05, mesegates:get_output_rules(node))
+		mesecon.queue:add_action(pos, "receptor_"..state_name2, {mesegates:get_output_rules(node)}, mesegates:get_refresh_time(), mesegates:get_output_rules(node))
 	end
 end
 

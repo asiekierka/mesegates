@@ -146,6 +146,17 @@ mesegates:register_gate({
 		end
 	end
 })
+mesegates:register_gate({
+	mod = "mesegates_default",
+	name = "pulse_former", description = "Pulse Former",
+	min_inputs = 1, max_inputs = 1,
+	on_on = function(pos, node)
+		mesegates:set_state(pos, true)
+		minetest.after(mesegates:get_refresh_time() * 3, function(pos)
+			mesegates:set_state(pos, false)
+		end, pos)
+	end
+})
 
 -- Crafting
 
