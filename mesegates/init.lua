@@ -20,6 +20,18 @@ local get_param_from_name = function(name)
 	return string.byte(name, -3) - 48
 end
 
+function mesegates:get_side_id(pos)
+	return get_side_id_from_name(minetest.get_node(pos).name)
+end
+
+function mesegates:get_rule(node, rule)
+	return mesegates:get_rules(node, {rule})[1]
+end
+
+function mesegates:is_powered(pos, node, rule)
+	return mesecon:is_powered(pos, mesegates:get_rule(node, rule))
+end
+
 function mesegates:get_rules(node, rules)
 	if node["param2"] ~= nil then
 		for i = 0, node.param2 do
@@ -97,7 +109,7 @@ function mesegates:register_gate(gate)
 		if gate.max_inputs == 2 then creative_side = 5 end
 		if gate.max_inputs == 1 then creative_side = 2 end
 	end
-	local possible_sides = {1,2,3,4,5,6,7}
+	local possible_sides = {0,1,2,3,4,5,6,7}
 	if gate.possible_sides ~= nil then possible_sides = gate.possible_sides end
 	for _,sides in ipairs(possible_sides) do
 		local side_count = #get_input_rules_from_id(sides)
