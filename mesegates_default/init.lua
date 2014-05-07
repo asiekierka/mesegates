@@ -286,6 +286,15 @@ minetest.register_craft({
 
 minetest.register_craft({
 	type = "shapeless",
+	output = mesegates:get_creative_name("mesegates_default:pulse_former"),
+	recipe = {
+		mesegates:get_creative_name("mesegates_default:diode"),
+		mesegates:get_creative_name("mesegates_default:not")
+	}
+})
+
+minetest.register_craft({
+	type = "shapeless",
 	output = "mesegates_default:base 9",
 	recipe = {"default:stone", "default:mese_crystal"}
 })
